@@ -41,8 +41,10 @@ def set_calibration(req):
 
 def get_calibration(req):
     
-    print "Get calibration matrix: " 
-    return GetCalibrationResponse(True)
+    print "Get calibration matrix: "
+    curTrans = get_param_transform('~CALIBRATION')
+    
+    return GetCalibrationResponse(True, curTrans)
 
 
 def init_parameters():
@@ -63,8 +65,8 @@ def start_st_core_service():
     init_parameters()
 
     print "Starting Core Service for Smart Template.."
-    s = rospy.Service('set_calibration', SetCalibration, set_calibration)
-    s = rospy.Service('get_calibration', GetCalibration, get_calibration)
+    s = rospy.Service('~set_calibration', SetCalibration, set_calibration)
+    s = rospy.Service('~get_calibration', GetCalibration, get_calibration)
     
     rospy.spin()
 
