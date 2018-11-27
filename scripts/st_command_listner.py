@@ -4,12 +4,26 @@ import rospy
 from std_msgs.msg import String
 from ROS_IGTL_Bridge.msg import igtlstring
 from ROS_IGTL_Bridge.msg import igtltransform
+from ros_smart_template.srv import *
 
 def cb_transform(data):
-    rospy.loginfo(rospy.get_caller_id() + "Tranform %s has been received.", data.name)
+    rospy.loginfo(rospy.get_caller_id() + ": Tranform %s has been received.", data.name)
+
+    if data.name == 'SET_CALIBRATION':
+        rospy.loginfo(rospy.get_caller_id() + ": Waiting for Core Service.")
+        rospy.wait_for_service('set_calibration')
+        try:
+            rospy.loginfo(rospy.get_caller_id() + ": Calling SetCalibration Service.")
+            set_calibration = rospy.ServiceProxy('set_calibration', SetCalibration)
+            res = set_calibration('CALIBRATION', data.transform)
+            return res.success
+        except rospy.ServiceException, e:
+            print "Service call failed: %s"%e
 
 def cb_string(data):
     rospy.loginfo(rospy.get_caller_id() + "String %s has been received.", data.name)
+
+    #if data.name == 'GET_CALIBRATION':
     
 def st_command_listener():
 
@@ -19,12 +33,12 @@ def st_command_listener():
     # name for our 'listener' node so that multiple listeners can
     # run simultaneously.
     rospy.init_node('st_command_listener', anonymous=True)
-    rospy.Subscriber("IGTL_TRANSFORM_IN", igtlstring, callback_transform)
-    rospy.Subscriber("IGTL_STRING_IN", igtlstring, callback_string)
+    rospy.Subscriber("IGTL_TRANSFORM_IN", igtltransform, cb_transform)
+    rospy.Subscriber("IGTL_STRING_IN", igtlstring, cb_string)
 
     # spin() simply keeps python from exiting until this node is stopped
     rospy.spin()
 
 if __name__ == '__main__':
-    st_command_listner()
+    st_command_listener()
 
