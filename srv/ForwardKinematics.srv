@@ -1,0 +1,9 @@
+float32 depth
+float32 front_x
+float32 front_y
+float32 rear_x
+float32 rear_y
+---
+bool success
+geometry_msgs/Transform transform
+

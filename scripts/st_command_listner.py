@@ -27,6 +27,23 @@ def cb_transform(data):
         except rospy.ServiceException, e:
             print "Service call failed: %s"%e
 
+    if data.name == 'SET_TARGET':
+        rospy.loginfo(rospy.get_caller_id() + ": Waiting for Core Service.")
+        rospy.wait_for_service('/st_core_service/set_target')
+        try:
+            rospy.loginfo(rospy.get_caller_id() + ": Calling SetTarget Service.")
+            set_target = rospy.ServiceProxy('/st_core_service/set_target', SetTarget)
+            res = set_target(data.transform)
+            transmsg = igtltransform()
+            transmsg.name = 'TARGET'
+            transmsg.transform = res.transform
+            pub_igtl_transform_out.publish(transmsg)
+            
+        except rospy.ServiceException, e:
+            print "Service call failed: %s"%e
+        
+        
+
 def cb_string(data):
     
     global pub_igtl_transform_out

@@ -61,6 +61,10 @@ add_service_files(
   FILES
   GetCalibration.srv
   SetCalibration.srv
+  ForwardKinematics.srv
+  InverseKinematics.srv  
+  GetTarget.srv
+  SetTarget.srv
 )
 
 # Generate actions in the 'action' folder
