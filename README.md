@@ -1,2 +1,8 @@
-# ros_smart_template
-ROS Package for Smart Template Controller
+ROS Node for Smart Template Controller
+======================================
+
+
+- [Installation](docs/INSTALL.md)
+
+
+
